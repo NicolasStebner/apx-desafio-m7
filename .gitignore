@@ -1,4 +1,6 @@
 be-dist
 fe-dist
+dist
 node_modules
 .env
+.parcel-cache
