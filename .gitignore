@@ -1,3 +1,4 @@
 be-dist
 fe-dist
 node_modules
+.env
