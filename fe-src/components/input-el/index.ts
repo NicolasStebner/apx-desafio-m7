@@ -15,20 +15,27 @@ export function init() {
             :host{
                 display:block;
             }
+			.contenedorInput{
+				margin:0 auto 20px;
+				max-width:300px; /* modificar */
+			}
             .label{
                 font-size:18px;
+				margin-bottom:10px;
             }
             .input{
                 border: none;
                 border:solid 1px black;
                 border-radius:4px;
                 box-shadow:none;
-                height:55px;
-                width:100%
+                width:100%;
+				padding:10px 20px;
             }
             `;
 			var shadow = this.attachShadow({ mode: "open" });
 			shadow.appendChild(style);
+			var divComponenteEntero = document.createElement("div");
+			divComponenteEntero.classList.add("contenedorInput");
 
 			var divLabel = document.createElement("div");
 			divLabel.classList.add("label");
@@ -38,8 +45,10 @@ export function init() {
 			divInput.classList.add("input");
 			divInput.placeholder = textoPlaceHolder;
 
-			shadow.appendChild(divLabel);
-			shadow.appendChild(divInput);
+			divComponenteEntero.appendChild(divLabel);
+			divComponenteEntero.appendChild(divInput);
+
+			shadow.appendChild(divComponenteEntero);
 		}
 	}
 	customElements.define("input-el", Input);
