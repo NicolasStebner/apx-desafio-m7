@@ -2,6 +2,8 @@ const assets = {
 	home_img: require("../../assets/home_img.png"),
 	auth_login: require("../../assets/auth_login.png"),
 	not_reports: require("../../assets/not_reports.png"),
+	reporte_mascota: require("../../assets/reporte_mascota.png"),
+	mapa: require("../../assets/mapa_para_reportar.png"),
 };
 
 export function init() {
@@ -23,7 +25,6 @@ export function init() {
 			shadow.appendChild(style);
 
 			var div = document.createElement("img");
-			div.classList.add("boton");
 			div.setAttribute("src", assets[asset]);
 			div.setAttribute("alt", textoDeEntrada);
 			shadow.appendChild(div);
