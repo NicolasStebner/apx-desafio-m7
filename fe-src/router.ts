@@ -7,6 +7,10 @@ import { initProfile } from "./pages/profile";
 import { initProfileDatosPersonales } from "./pages/profile-datos-personales";
 import { initProfileCambiarContrasenia } from "./pages/profile-contrasenia";
 import { initNotReports } from "./pages/mis-reportes-vacio";
+import { initMisReportes } from "./pages/mis-reportes";
+import { initReportarMascota } from "./pages/reportar";
+import { initEditarReporteMascota } from "./pages/reportar-editar";
+
 const routes = [
 	{
 		path: /\/home/,
@@ -43,6 +47,18 @@ const routes = [
 	{
 		path: /\/mis-reportes-vacio/,
 		component: initNotReports,
+	},
+	{
+		path: /\/reportar-mascota/,
+		component: initReportarMascota,
+	},
+	{
+		path: /\/editar-reporte-mascota/,
+		component: initEditarReporteMascota,
+	},
+	{
+		path: /\/mis-reportes/,
+		component: initMisReportes,
 	},
 ];
 
