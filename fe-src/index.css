@@ -1,13 +1,38 @@
-*{
-    box-sizing: border-box;
+* {
+	box-sizing: border-box;
 }
-body{
-    margin:0;
+body {
+	margin: 0;
 }
 /*  */
-.main{
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    padding:10px 10px;
+.main {
+	font-family: "Poppins", sans-serif;
+	display: flex;
+	flex-direction: column;
+	height: 100%;
+	max-width: 90vw;
+	margin: 0 auto;
+	padding: 30px 20px 5px;
+}
+
+.img {
+	margin: 0 auto;
+}
+
+.title {
+	margin: 50px 0 25px 0;
+    font-weight: 800;
+}
+
+.subtitle {
+	padding: 0 20px;
+}
+
+.centrado {
+	text-align: center;
+}
+
+.button {
+	margin: 20px auto 10px;
+    min-width: 250px;
 }
