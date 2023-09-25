@@ -3,12 +3,12 @@ export function initProfileCambiarContrasenia(params) {
 	div.classList.add("contenedor");
 	div.innerHTML = `
 	<header-el></header-el>
-    <div class="main">
-	    <title-el label="Contraseña"></title-el>
+    <main class="main">
+	    <title-el class="title centrado" label="Contraseña"></title-el>
         <input-el label="CONTRASEÑA" placeholder=""></input-el>
         <input-el label="CONFIRMAR CONTRASEÑA" placeholder=""></input-el>
-        <button-el color="#5A8FEC" label="Guardar"></button-el>
-    </div>
+        <button-el class="button" color="#5A8FEC" label="Guardar"></button-el>
+    </main>
     `;
 
 	return div;

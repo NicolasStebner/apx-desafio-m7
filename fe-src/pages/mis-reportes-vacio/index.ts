@@ -3,12 +3,12 @@ export function initNotReports(params) {
 	div.classList.add("contenedor");
 	div.innerHTML = `
 	<header-el></header-el>
-    <div class="main">
-	    <title-el label="Mascotas reportadas"></title-el>
-	    <h3>Aún no reportaste mascotas perdidas</h3>
-        <img-el asset="not_reports" alt="not_reports"></img-el>
-        <button-el color="#5A8FEC" label="Publicar reporte"></button-el>
-    </div>
+    <main class="main">
+	    <title-el class="title centrado" label="Mascotas reportadas"></title-el>
+	    <h3 class="centrado" >Aún no reportaste mascotas perdidas</h3>
+        <img-el class="img" asset="not_reports" alt="not_reports"></img-el>
+        <button-el class="button" color="#5A8FEC" label="Publicar reporte"></button-el>
+    </main>
     `;
 	return div;
 }

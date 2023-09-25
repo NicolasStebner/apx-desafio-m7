@@ -3,12 +3,12 @@ export function initProfileDatosPersonales(params) {
 	div.classList.add("contenedor");
 	div.innerHTML = `
 	<header-el></header-el>
-    <div class="main">
-	    <title-el label="Datos Personales"></title-el>
+    <main class="main">
+	    <title-el class="title centrado" label="Datos Personales"></title-el>
         <input-el label="Nombre" placeholder=""></input-el>
         <input-el label="Localidad" placeholder=""></input-el>
-        <button-el color="#5A8FEC" label="Guardar"></button-el>
-    </div>
+        <button-el class="button" color="#5A8FEC" label="Guardar"></button-el>
+    </main>
     `;
 
 	return div;

@@ -3,13 +3,13 @@ export function initProfile(params) {
 	div.classList.add("contenedor");
 	div.innerHTML = `
 	<header-el></header-el>
-    <div class="main">
-	    <title-el label="Mis datos"></title-el>
+    <main class="main">
+	    <title-el class="title centrado"label="Mis datos"></title-el>
         <button-el class="button datos" color="#5A8FEC" label="Modificar datos personales"></button-el>
         <button-el class="button password" color="#5A8FEC" label="Modificar contraseña"></button-el>
         <h5>EMAIL_USER@HOTMAIL.COM</h5>
         <p>Cerrar Sesión</p>
-    </div>
+    </main>
     `;
 	const datosButton = div.querySelector(".datos");
 
