@@ -14,7 +14,7 @@ export function init() {
             }
             .boton{
                 border-radius: 10px;
-                padding: 14px 0 17px;
+                padding: 14px 10px 17px;
                 text-align:center;
                 color:white;
                 font-size:16px;
