@@ -1,4 +1,5 @@
-export function initLogin(params) {
+import { state } from "../../state";
+export async function initLogin(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
@@ -6,12 +7,26 @@ export function initLogin(params) {
     <main class="main">
         <img-el class="img" asset="auth_login" alt="login"></img-el>
 	    <title-el class="title centrado" label="Ingresar"></title-el>
-	    <h4>Ingresá tu email para continuar</h4>
-		<input-el label="EMAIL" placeholder=""></input-el>
+	    <h4 class="centrado" >Ingresá tu email para continuar</h4>
+		<input-el class="input" label="EMAIL" type="email" placeholder=""></input-el>
         <button-el class="button" color="#5A8FEC" label="Siguiente"></button-el>
-        <h5>¿Aún no tenes cuenta? Registrate</h5>
+		<h5 class="centrado">¿Aún no tenes cuenta? <a href="./login-password">Registrate</a></h5>
     </main>
     `;
+
+	const buttonEl = div.querySelector(".button");
+	buttonEl.addEventListener("click", async () => {
+		const emailCont = div.querySelector(".input");
+		const input = emailCont.shadowRoot.querySelector(".input");
+		const existeMail = await state.chequeoExistenciaEmail(input.value);
+		//console.log("rta desde pagina button ", existeMail);
+
+		if (existeMail === null) {
+			params.goTo("/signup");
+		} else {
+			params.goTo("/login-password");
+		}
+	});
 
 	return div;
 }
