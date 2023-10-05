@@ -7,6 +7,7 @@ export function init() {
 		refactor() {
 			const textoDeEntrada = this.getAttribute("label");
 			const textoPlaceHolder: any = this.getAttribute("placeholder");
+			const type = this.getAttribute("type") || "text";
 			var style = document.createElement("style");
 			style.textContent = `
             *{
@@ -43,6 +44,7 @@ export function init() {
 
 			var divInput = document.createElement("input");
 			divInput.classList.add("input");
+			divInput.setAttribute("type", type);
 			divInput.placeholder = textoPlaceHolder;
 
 			divComponenteEntero.appendChild(divLabel);
