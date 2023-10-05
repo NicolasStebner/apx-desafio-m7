@@ -1,3 +1,4 @@
+import { state } from "../../state";
 export function initLoginPassword(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
@@ -5,13 +6,25 @@ export function initLoginPassword(params) {
 	<header-el></header-el>
     <main class="main">
 	    <title-el class="title centrado"label="Iniciar Sesión"></title-el>
-	    <h4>Ingresá los siguientes datos para iniciar sesión</h4>
-		<input-el label="EMAIL" placeholder=""></input-el>
-		<input-el label="CONTRASEÑA" placeholder=""></input-el>
-        <h5>Olvidé mi contraseña</h5>
+	    <h4 class="centrado">Ingresá los siguientes datos para iniciar sesión</h4>
+		<input-el class="input" label="EMAIL" placeholder=""></input-el>
+		<input-el class="input" label="CONTRASEÑA" type="password" placeholder=""></input-el>
+        <h5 class="centrado"><a href="./signup">Olvidé mi contraseña</a></h5>
         <button-el class="button"color="#5A8FEC" label="Acceder"></button-el>
     </main>
     `;
-
+	const buttonEl = div.querySelector(".button");
+	buttonEl.addEventListener("click", async () => {
+		const emailCont = div.querySelectorAll(".input")[0];
+		const emailValue = emailCont.shadowRoot.querySelector(".input").value;
+		const passwordCont = div.querySelectorAll(".input")[1];
+		const passValue = passwordCont.shadowRoot.querySelector(".input").value;
+		const rta = await state.signIn(emailValue, passValue);
+		if (rta) {
+			params.goTo("/profile");
+		} else {
+			alert("el usuario o la contraseña son incorrectos");
+		}
+	});
 	return div;
 }
