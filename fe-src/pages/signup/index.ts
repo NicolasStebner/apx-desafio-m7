@@ -10,7 +10,7 @@ export function initSignUp(params) {
 		<input-el class="input" label="EMAIL" placeholder=""></input-el>
 		<input-el class="input" label="CONTRASEÑA" type="password" placeholder=""></input-el>
 		<input-el class="input" label="CONFIRMAR CONTRASEÑA" type="password" placeholder=""></input-el>
-        <h5 class="centrado">¿Ya tenes una cuenta? <a href="./login">Iniciar Sesión</a></h5>
+        <h5 class="centrado iniciarSesion">¿Ya tenes una cuenta? <p class="link">Iniciar Sesión</p></h5>
         <button-el class="button" color="#5A8FEC" label="Siguiente"></button-el>
     </main>
     `;
@@ -31,6 +31,10 @@ export function initSignUp(params) {
 		} else {
 			alert("Las contraseñas no coinciden");
 		}
+	});
+	const iniciarSesionEl = div.querySelector(".iniciarSesion");
+	iniciarSesionEl.addEventListener("click", () => {
+		params.goTo("/login");
 	});
 
 	return div;
