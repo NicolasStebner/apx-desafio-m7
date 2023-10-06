@@ -13,7 +13,7 @@ export function init() {
                 display:block;
             }
             .subtitle{
-                font-size:24px
+                font-size:20px
             }
             `;
 			var shadow = this.attachShadow({ mode: "open" });
