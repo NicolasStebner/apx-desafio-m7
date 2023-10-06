@@ -10,7 +10,7 @@ export async function initProfile(params) {
         <button-el class="button datos" color="#5A8FEC" label="Modificar datos personales"></button-el>
         <button-el class="button password" color="#5A8FEC" label="Modificar contraseña"></button-el>
         <h5 class="centrado">${email}</h5>
-        <p class="centrado"><a class="logout" href="./login">Cerrar Sesión</a></p>
+        <p class="centrado logout link">Cerrar Sesión</p>
     </main>
     `;
 	const datosButton = div.querySelector(".datos");
@@ -24,6 +24,7 @@ export async function initProfile(params) {
 	});
 	logoutEl.addEventListener("click", async () => {
 		await state.logOut();
+		params.goTo("/login");
 	});
 	return div;
 }
