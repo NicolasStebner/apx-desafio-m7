@@ -9,7 +9,7 @@ export function initLoginPassword(params) {
 	    <h4 class="centrado">Ingresá los siguientes datos para iniciar sesión</h4>
 		<input-el class="input" label="EMAIL" placeholder=""></input-el>
 		<input-el class="input" label="CONTRASEÑA" type="password" placeholder=""></input-el>
-        <h5 class="centrado"><a href="./signup">Olvidé mi contraseña</a></h5>
+        <h5 class="centrado link forgot"><p>Olvidé mi contraseña</p></h5>
         <button-el class="button"color="#5A8FEC" label="Acceder"></button-el>
     </main>
     `;
@@ -25,6 +25,10 @@ export function initLoginPassword(params) {
 		} else {
 			alert("el usuario o la contraseña son incorrectos");
 		}
+	});
+	const forgotPasswordEl = div.querySelector(".forgot");
+	forgotPasswordEl.addEventListener("click", () => {
+		params.goTo("/signup");
 	});
 	return div;
 }
