@@ -10,7 +10,7 @@ export async function initLogin(params) {
 	    <h4 class="centrado" >Ingresá tu email para continuar</h4>
 		<input-el class="input" label="EMAIL" type="email" placeholder=""></input-el>
         <button-el class="button" color="#5A8FEC" label="Siguiente"></button-el>
-		<h5 class="centrado">¿Aún no tenes cuenta? <a href="./login-password">Registrate</a></h5>
+		<h5 class="centrado signup">¿Aún no tenes cuenta? <p class="link">Registrate</p></h5>
     </main>
     `;
 
@@ -27,6 +27,9 @@ export async function initLogin(params) {
 			params.goTo("/login-password");
 		}
 	});
-
+	const signUpEl = div.querySelector(".signup");
+	signUpEl.addEventListener("click", () => {
+		params.goTo("/signup");
+	});
 	return div;
 }
