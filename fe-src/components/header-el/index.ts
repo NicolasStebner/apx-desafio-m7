@@ -11,7 +11,7 @@ export function init() {
 			this.refactor();
 		}
 		refactor() {
-			var emailUser = this.getAttribute("emailUser");
+			var emailUser = sessionStorage.getItem("useremail");
 			var style = document.createElement("style");
 			style.textContent = `
             :host{
@@ -89,7 +89,6 @@ export function init() {
 				color:#3B97D3;
 			}
             `;
-			var emailUser = this.getAttribute("emailUser");
 			var shadow = this.attachShadow({ mode: "open" });
 			shadow.appendChild(style);
 			/* Creo la ventana con las opciones*/
