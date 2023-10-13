@@ -17,5 +17,12 @@ export function initEditarReporteMascota(params) {
         <button-el class="button" color="#EB6372" label="Eliminar reporte"></button-el>
     </main>
     `;
+
+	/* cargar la data de la db para mostrarla aca en la pagina(preguntar) 
+    
+    En caso de "guardar": reemplazar la data
+    En caso de "reportar como encontrado", cambiar el valor dentro de la BD
+    En caso de "elimnar reporte", eliminarlo btw
+    */
 	return div;
 }

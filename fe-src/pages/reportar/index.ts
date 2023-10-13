@@ -16,5 +16,13 @@ export function initReportarMascota(params) {
         <button-el class="button" color="#4A5553" label="Cancelar"></button-el>
     </main>
     `;
+
+	/* TODO list:
+        Aplicar cloudinary para agregar la foto
+        Fijarse el tema de la ubicacion(algolia ?)
+
+    En caso de apretar "reportar mascota", se la reporta con msj a  la BD
+    En caso de cancelar, limpiar los campos y hacer un redict
+     */
 	return div;
 }

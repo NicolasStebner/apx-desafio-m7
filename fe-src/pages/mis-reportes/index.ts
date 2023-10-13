@@ -1,3 +1,4 @@
+import { state } from "../../state";
 export function initMisReportes(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
@@ -7,5 +8,7 @@ export function initMisReportes(params) {
 	    <title-el class="title centrado" label="Mascotas reportadas"></title-el>
     </main>
     `;
+	const misReportes = state.misReportes();
+
 	return div;
 }

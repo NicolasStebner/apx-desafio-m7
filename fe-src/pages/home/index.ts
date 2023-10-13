@@ -1,6 +1,6 @@
 import { state } from "../../state";
 
-export function initPageWelcome(params) {
+export async function initPageWelcome(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `

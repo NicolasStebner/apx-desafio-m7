@@ -4,7 +4,7 @@ export async function initProfile(params) {
 	const email = await state.getEmail();
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el emailUser=${email}></header-el>
+	<header-el></header-el>
     <main class="main">
 	    <title-el class="title centrado"label="Mis datos"></title-el>
         <button-el class="button datos" color="#5A8FEC" label="Modificar datos personales"></button-el>
