@@ -5,20 +5,25 @@ const state = {
 		email: "",
 		ubicacion: "" /* posible modificacion */,
 	},
+	async init() {
+		sessionStorage.setItem("useremail", "");
+	},
 	async getState() {
 		return this.data;
 	},
 	async setEmail(email: string) {
 		const gs = await this.getState();
 		gs.email = email;
+		sessionStorage.setItem("useremail", email);
 	},
 	async getEmail() {
-		const gs = await this.getState();
-		return gs.email;
+		const email = sessionStorage.getItem("useremail");
+		return email;
 	},
 	async logOut() {
 		const gs = await this.getState();
 		gs.email = "";
+		sessionStorage.removeItem("useremail");
 	},
 	async setNombreAndLocalidad(nombre: string, ubicacion: string) {
 		const gs = await this.getState();
