@@ -5,8 +5,11 @@ export class Mascota extends Model {}
 //modificar los campos
 Mascota.init(
 	{
-		title: DataTypes.STRING,
-		price: DataTypes.INTEGER,
+		nombre: DataTypes.STRING,
+		ubicacion: DataTypes.STRING,
+		fotoURL: DataTypes.STRING,
+		idReportador: DataTypes.INTEGER,
+		perdido: DataTypes.BOOLEAN
 	},
 	{
 		sequelize,
