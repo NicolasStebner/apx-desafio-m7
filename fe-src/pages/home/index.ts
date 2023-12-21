@@ -1,5 +1,3 @@
-import { state } from "../../state";
-
 export async function initPageWelcome(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
