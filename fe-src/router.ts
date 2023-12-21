@@ -53,7 +53,7 @@ const routes = [
 		component: initReportarMascota,
 	},
 	{
-		path: /\/editar-reporte-mascota/,
+		path: /\/edit-mascota/,
 		component: initEditarReporteMascota,
 	},
 	{
