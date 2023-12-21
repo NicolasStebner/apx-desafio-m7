@@ -1,28 +1,55 @@
+import { state } from "../../state";
 export function initEditarReporteMascota(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
+    var mascota = JSON.parse(sessionStorage.getItem("mascota"))
 	div.innerHTML = `
 	<header-el></header-el>
     <main class="main">
-	    <title-el class="title centrado" label="Reportar mascota"></title-el>
+        <title-el class="title centrado" label="Editar reporte de mascota"></title-el>
         <h4 class="centrado">Ingresá la siguiente información para realizar el reporte de la mascota</h4>
-        <input-el label="Nombre" placeholder=""></input-el>
-        <img-el class="img" asset="reporte_mascota" alt="imagen_para_subir" ></img-el>
-        <button-el class="button" color="#5A8FEC" label="Agregar foto"></button-el>
-        <img-el class="img" asset="mapa" alt="mapa_referencia" ></img-el>
+        <input-el class="input" label="Nombre" placeholder="" defaultValue="${mascota.nombre}"></input-el>
+        <img class="img img-to-replace" src="${mascota.fotoURL}" alt="agrega una imagen de tu mascota"></img>
+        <button-el class="button upPhoto" color="#5A8FEC" label="Agregar foto"></button-el>
         <h3>Buscá un punto de referencia para reportar la mascota. Por ejemplo, la ubicación donde lo viste por última vez.</h3>
-        <input-el label="Ubicacion" placeholder=""></input-el>
-        <button-el class="button" color="#5A8FEC" label="Guardar"></button-el>
-        <button-el class="button" color="#00A884" label="Reportar como encontrado"></button-el>
-        <button-el class="button" color="#EB6372" label="Eliminar reporte"></button-el>
+        <div id="map" class="map"></div>
+        <form class="search-form">
+            <input class="ubication-input"name="q" type="search" value="${mascota.ubicacion}"/>
+            <button class="buscar">Buscar</button>
+        </form>
+        <button-el class="button guardar" color="#5A8FEC" label="Guardar"></button-el>
+        <button-el class="button encontrado" color="#00A884" label="Reportar como encontrado"></button-el>
+        <button-el class="button eliminar" color="#EB6372" label="Eliminar reporte"></button-el>
     </main>
     `;
-
-	/* cargar la data de la db para mostrarla aca en la pagina(preguntar) 
-    
-    En caso de "guardar": reemplazar la data
-    En caso de "reportar como encontrado", cambiar el valor dentro de la BD
-    En caso de "elimnar reporte", eliminarlo btw
-    */
+    const buttonToAddPhoto = div.querySelector(".upPhoto");
+	buttonToAddPhoto.addEventListener("click", () => {
+		const imgEl = div.querySelector(".img-to-replace");
+		const localStorageURL = localStorage.getItem("urlMascota");
+		if (localStorageURL) {
+			imgEl.setAttribute("src", localStorageURL);
+		} else {
+			alert("algo salio mal");
+		}
+	});
+    const buttonGuardar = div.querySelector(".guardar")
+    buttonGuardar.addEventListener("click",()=>{
+        const nombreCont = div.querySelector(".input");
+		const nombreValue = nombreCont.shadowRoot.querySelector(".input").value;
+		const urlImagen = div.querySelector(".img-to-replace").getAttribute("src");
+		const ubicacion = div.querySelector(".ubication-input").value;
+        state.updateMascota(nombreValue,urlImagen,ubicacion);
+        params.goTo("/mis-reportes")
+    })
+    const buttonEncontrado = div.querySelector(".encontrado")
+    buttonEncontrado.addEventListener("click",()=>{
+        state.mascotaEncontrada();
+        params.goTo("/mis-reportes")
+    })
+    const buttonEliminar = div.querySelector(".eliminar")
+    buttonEliminar.addEventListener("click",()=>{
+        state.eliminarMascota();
+        params.goTo("/mis-reportes")
+    })
 	return div;
 }
