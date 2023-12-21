@@ -5,6 +5,9 @@ import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
 import { User, Mascota, Auth } from "./models";
 import { updateProfile, getProfile } from "./controllers/users-controller";
+import { cloudinary } from "./lib/cloudinary";
+import { client } from "./lib/algolia";
+
 const PORT = process.env.PORT || 3005;
 const app = express();
 
@@ -30,11 +33,6 @@ app.post("/check-if-email-exists", async (req, res) => {
 	const existeEmail = await Auth.findOne({
 		where: { email: email },
 	});
-	//console.log(existeEmail);
-	//console.log("existe este email?", existeEmail);
-
-	//Hardcodeado para crear y luego testear si existe
-	/* await Auth.create({ email: "test@test.com" }); */
 
 	res.json(existeEmail);
 });
@@ -61,7 +59,6 @@ app.post("/signin", async (req, res) => {
 
 app.post("/signup", async (req, res) => {
 	const { email } = req.body;
-
 	const [user, created] = await User.findOrCreate({
 		where: { email: req.body.email },
 		defaults: {
@@ -94,8 +91,6 @@ app.post("/user/:email", async (req, res) => {
 
 app.post("/change-password/:email/:password", async (req, res) => {
 	const auth = await Auth.findOne({ where: { email: req.body.email } });
-	console.log(auth);
-
 	if (auth) {
 		await auth.update({
 			password: getSHA256ofString(req.body.password),
@@ -105,6 +100,90 @@ app.post("/change-password/:email/:password", async (req, res) => {
 		res.status(400).json({ message: "user not found" });
 	}
 });
+
+app.post("/reportar-mascota/", async (req, res) => {
+	const { nombre, fotoURL, ubicacion, idReportador } = req.body;
+
+	const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
+		resource_type: "image",
+		discard_original_filename: true,
+		width: 1000
+	});
+	
+	const mascota = await Mascota.create({ //instancia la mascota y le agrega el link
+		nombre: nombre,
+		ubicacion: ubicacion,
+		fotoURL: imagen.secure_url,
+		idReportador: idReportador,
+		perdido:true
+	});
+	return res.json(mascota);
+});
+
+app.get("/get-id-by-email/:email", async (req, res) => {
+	const rta = await Auth.findOne({
+		where: {
+			email: req.params.email,
+		},
+	});
+	return res.json(rta["user_id"]);
+});
+
+app.get("/get-reports-by-id/:id", async (req, res) => {
+
+	const rta = await Mascota.findAll({
+		where: {
+			idReportador: req.params.id,
+		},
+	});
+	return res.json(rta);
+});
+
+app.get("/get-mascota-by-id/:id", async (req, res) => {
+	const rta = await Mascota.findOne({
+		where: {
+			id: req.params.id,
+		},
+	});
+	return res.json(rta);
+});
+app.put("/guardar-mascota-by-id", async (req, res) => {
+	const imagen = await cloudinary.uploader.upload(req.body.fotoURL, { //guarda la imagen en cloudinary
+		resource_type: "image",
+		discard_original_filename: true,
+		width: 1000
+	});
+
+	const rta = await Mascota.update({
+		nombre: req.body.nombre,
+		ubicacion: req.body.ubicacion,
+		fotoURL: imagen.secure_url
+	},{
+		where: {
+			id: req.body.id,
+		},
+	});
+	return res.json(rta);
+});
+
+app.put("/mascota-encontrada-by-id", async (req, res) => {
+	const rta = await Mascota.update({perdido: false},{
+		where: {
+			id: req.body.id,
+		},
+	});
+	return res.json(rta);
+});
+
+app.delete("/eliminar-mascota-by-id", async (req, res) => {
+	const rta = await Mascota.destroy({
+		where: {
+			id: req.body.id,
+		},
+	});
+	return res.json(rta);
+});
+
 /* const staticDirPath = path.resolve(__dirname, "../fe-dist");
 app.use(express.static(staticDirPath));
 
