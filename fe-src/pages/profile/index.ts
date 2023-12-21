@@ -1,7 +1,8 @@
 import { state } from "../../state";
 export async function initProfile(params) {
 	const div = document.createElement("div");
-	const email = await state.getEmail();
+	// const email = await state.getEmail();
+	const email = sessionStorage.getItem("useremail");
 	div.classList.add("contenedor");
 	div.innerHTML = `
 	<header-el></header-el>
