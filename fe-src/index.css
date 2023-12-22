@@ -22,8 +22,15 @@ body {
 	width: 215px;
 	min-height: 235px;
 }
-
-
+.container-informacion{
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+.justificado{
+	text-align: justify;
+}
 .img-to-replace{
 	border: 3px solid;
 }
@@ -41,6 +48,13 @@ body {
 	text-align: center;
 }
 
+.right{
+	text-align: end;
+}
+
+.x{
+	margin:0;
+}
 .button {
 	margin: 20px auto 10px;
 	min-width: 250px;
@@ -101,4 +115,21 @@ button {
 .button-editar{
 	min-width: 30%;
 	max-width: 40%;
+}
+
+/**/
+.contenedor-report{
+	font-family: "Poppins", sans-serif;
+	display: none;
+	gap:10px;
+	color: white;
+	flex-direction: column;
+	position: absolute;
+	border-radius: 10px;
+	background-color: #26302E;
+	padding: 10px 20px;
+	top: 100px;
+  left: 20px;
+  right: 20px;
+  margin: auto;
 }
