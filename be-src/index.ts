@@ -3,16 +3,16 @@ import * as path from "path";
 import * as cors from "cors";
 import * as crypto from "crypto";
 import * as jwt from "jsonwebtoken";
-import { User, Mascota, Auth } from "./models";
-import { updateProfile, getProfile } from "./controllers/users-controller";
+import { Resend } from 'resend';
 import { cloudinary } from "./lib/cloudinary";
-import { client } from "./lib/algolia";
-import { resend } from "./lib/resend";
+import { findOrCreateUser, findByEmailUser } from "./controllers/users-controller";
+import { checkEmailExist, checkEmailPassword, findOrCreateAuth, findByEmailAuth, findByPkAuth } from "./controllers/auth-controller";
+import { borrarMascota, borrarUbicacionMascota, createMascota, findByPkMascota, getMascotaSegunIdReportador, guardarUbicacionMascota, mascotaEncontrada, mascotasCerca, updateMascota } from "./controllers/mascota-controller";
 
 const PORT = process.env.PORT || 3005;
 const app = express();
-const algoliaUserIndex = client.initIndex("users")
-const algoliaMascotaIndex = client.initIndex("mascotas")
+const resend = new Resend(process.env.API_KEY_RESEND);
+
 app.use(
 	express.json({
 		limit: "50mb",
@@ -21,15 +21,7 @@ app.use(
 app.use(cors());
 
 app.get("/test", (req, res) => {
-	// algoliaUserIndex.saveObject({
-	// 	objectID: "1",
-	// 	cositas:"algo para guardar"
-	// }).then((res) => {
-	// 	console.log(res);
-	// })
-	// .catch((e) => {
-	// 	console.log(e);
-	// });
+	
 	res.json({ test: "ok" });
 });
 
@@ -38,199 +30,170 @@ function getSHA256ofString(text: string) {
 	return crypto.createHash("sha256").update(text).digest("hex");
 }
 
+//Auth
 app.post("/check-if-email-exists", async (req, res) => {
 	const { email } = req.body;
-
-	const existeEmail = await Auth.findOne({
-		where: { email: email },
-	});
-
-	res.json(existeEmail);
+	if(email){
+		const existeEmail = checkEmailExist(email)
+		res.json(existeEmail);
+	}else{
+		res.status(400).json({message:"Se necesita un email válido/existente."})
+	}
 });
 
 app.post("/signin", async (req, res) => {
 	const { email, password } = req.body;
-	const passwordHasheado = getSHA256ofString(password);
-	const auth = await Auth.findOne({
-		where: {
-			email,
-			password: passwordHasheado,
-		},
-	});
-	if (auth) {
-		const token = await jwt.sign(
-			{ id: auth.get("user_id") },
-			process.env.SECRET
-		);
-		res.json({ token });
-	} else {
-		res.status(400).json({ error: "email or pass incorrect" });
+	if(email && password){
+		const passwordHasheado = getSHA256ofString(password);
+		const auth = await checkEmailPassword(email, passwordHasheado)
+		if (auth) {
+			const token = await jwt.sign(
+				{ id: auth.get("user_id") },
+				process.env.SECRET
+				);
+			res.json({ token });
+		} else {
+			res.status(400).json({ error: "email or pass incorrect" });
+		}
+	}
+	else{
+		res.status(400).json({message:"Falta el email y/o contraseña"})
 	}
 });
 
 app.post("/signup", async (req, res) => {
-	const { email } = req.body;
-	const [user, created] = await User.findOrCreate({
-		where: { email: req.body.email },
-		defaults: {
-			email,
-		},
-	});
-	const [auth, authCreated] = await Auth.findOrCreate({
-		where: { user_id: user.get("id") },
-		defaults: {
-			email,
-			password: getSHA256ofString(req.body.password),
-			user_id: user.get("id"),
-		},
-	});
-	algoliaUserIndex.saveObject({
-			objectID: user.get("id"),
-			cositas:"algo para guardar"
-		}).then((res) => {
-			console.log(res);
-		})
-		.catch((e) => {
-			console.log(e);
-		});
-
-	res.json(auth);
+	const { email, password} = req.body;
+	if(email && password){
+		const passwordHasheado = getSHA256ofString(password)
+		const [user, created] = await findOrCreateUser(email)
+		const [auth, authCreated] = await findOrCreateAuth(user.get("id"),email,passwordHasheado)
+		res.json(auth);
+	}else{
+		res.status(400).json({message:"Se necesita un email y contraseña."})
+	}
 });
 
 app.post("/user/:email", async (req, res) => {
-	const user = await User.findOne({ where: { email: req.body.email } });
-	if (user) {
-		await user.update({
-			nombre: req.body.nombre,
-			ubicacion: req.body.ubicacion,
-		});
-		res.status(200).json({ message: "updated" });
-	} else {
-		res.status(400).json({ message: "user not found" });
+	const {email, nombre, ubicacion} = req.body
+	if(email){
+		const user = await findByEmailUser(req.body.email)
+		if (user) {
+			if(nombre != "" && ubicacion != ""){
+				await user.update({
+					nombre: req.body.nombre,
+					ubicacion: req.body.ubicacion,
+				});
+				res.status(200).json({ message: "updated" });
+			}
+			res.status(400).json({message: "nombre y/o ubicacion no válida"})
+		}
+		res.status(400).json({ message: "usuario no encontrado" });
+	}else{
+		res.status(400).json({message:"Se necesita un email válido/existente."})
 	}
 });
 
 app.post("/change-password/:email/:password", async (req, res) => {
-	const auth = await Auth.findOne({ where: { email: req.body.email } });
-	if (auth) {
-		await auth.update({
-			password: getSHA256ofString(req.body.password),
+	const { email, password } = req.body
+	if(email){
+		const auth = await findByEmailAuth(email)
+		if (auth) {
+			await auth.update({
+			password: getSHA256ofString(password),
 		});
-		res.status(200).json({ message: "password updated" });
-	} else {
-		res.status(400).json({ message: "user not found" });
+		res.status(200).json({ message: "contraseña actualizada" });
+		}
+		res.status(400).json({ message: "usuario no encontrado" });
+	}else{
+		res.status(400).json({message: "Se necesita un email válido/existente." })
 	}
 });
 
+//Mascota
 app.post("/reportar-mascota/", async (req, res) => {
-	const { nombre, fotoURL, ubicacion, idReportador } = req.body;
-
+	const { nombre, fotoURL, ubicacion, idReportador, lat, lng } = req.body;
 	const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
 		resource_type: "image",
 		discard_original_filename: true,
 		width: 1000
 	});
-	
-	const mascota = await Mascota.create({ //instancia la mascota y le agrega el link
-		nombre: nombre,
-		ubicacion: ubicacion,
-		fotoURL: imagen.secure_url,
-		idReportador: idReportador,
-		perdido: true
-	});
-
-	algoliaMascotaIndex.saveObject({
-		objectID: mascota.getDataValue("id"),
-		_geoloc:{
-			lat: req.body.lat,
-			lng: req.body.lng
-		}
-	}).then((res) => {
-		console.log(res);
-	})
-	.catch((e) => {
-		console.log(e);
-	});	
+	const mascota = await createMascota(nombre,ubicacion,imagen.secure_url,idReportador)
+	await guardarUbicacionMascota(mascota.getDataValue("id"),lat,lng)
 
 	return res.json(mascota);
 });
 
 app.get("/get-id-by-email/:email", async (req, res) => {
-	const rta = await Auth.findOne({
-		where: {
-			email: req.params.email,
-		},
-	});
-	return res.json(rta["user_id"]);
+	const {email} = req.params
+	if(email){
+		const rta = await findByEmailAuth(email)
+		return res.json(rta["user_id"]);
+	}else{
+		res.status(400).json({message: "Se necesita un email válido/existente." })
+	}
 });
 
 app.get("/get-reports-by-id/:id", async (req, res) => {
-
-	const rta = await Mascota.findAll({
-		where: {
-			idReportador: req.params.id,
-		},
-	});
-	return res.json(rta);
+	const {id} = req.params
+	if(id){
+		const rta = await getMascotaSegunIdReportador(id)
+		return res.json(rta);
+	}else{
+		res.status(400).json({message: "Se necesita un id válido/existente." })
+	}
 });
 
 app.get("/get-mascota-by-id/:id", async (req, res) => {
-	const rta = await Mascota.findOne({
-		where: {
-			id: req.params.id,
-		},
-	});
-	return res.json(rta);
+	const { id } = req.params
+	if(id){
+		const rta = await findByPkMascota(id)
+		return res.json(rta);
+	}else{
+		res.status(400).json({message: "Se necesita un id válido/existente." })
+	}
 });
 app.put("/guardar-mascota-by-id", async (req, res) => {
-	const imagen = await cloudinary.uploader.upload(req.body.fotoURL, { //guarda la imagen en cloudinary
+	const {id, nombre, fotoURL, ubicacion, idReportador} = req.body;
+	const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
 		resource_type: "image",
 		discard_original_filename: true,
 		width: 1000
 	});
-
-	const rta = await Mascota.update({
-		nombre: req.body.nombre,
-		ubicacion: req.body.ubicacion,
-		fotoURL: imagen.secure_url
-	},{
-		where: {
-			id: req.body.id,
-		},
-	});
+	const rta = await updateMascota(id, nombre, ubicacion, imagen.secure_url, idReportador)
 	return res.json(rta);
 });
 
 app.put("/mascota-encontrada-by-id", async (req, res) => {
-	const rta = await Mascota.update({perdido: false},{
-		where: {
-			id: req.body.id,
-		},
-	});
-	return res.json(rta);
+	const {id} = req.body
+	if(id){
+		const rta = await mascotaEncontrada(id)
+		return res.json(rta);
+	}
+	else{
+		res.status(400).json({message: "Se necesita un id válido/existente." })
+	}
 });
 
 app.delete("/eliminar-mascota-by-id", async (req, res) => {
-	const rta = await Mascota.destroy({
-		where: {
-			id: req.body.id,
-		},
-	});
-	algoliaMascotaIndex.deleteObject(req.body.id)
-	return res.json(rta);
+	const {id} = req.body
+	if(id){
+		const rta = await borrarMascota(id)
+		await borrarUbicacionMascota(id)
+		return res.json(rta);
+	}else{
+		res.status(400).json({message: "Se necesita un id válido/existente." })
+	}
 });
+
 app.get("/get-mascotas-cerca", async (req, res) => {
 	const { lat, lng } = req.query;
-	const { hits } = await algoliaMascotaIndex.search("", {
-		aroundLatLng: [lat, lng].join(","),
-		aroundRadius: 100000000,
-	});
+	const { hits } = await mascotasCerca(lat,lng,100000000)
 	res.json(hits);
 });
 
 app.get("/get-email-by-id/:id", async(req,res)=>{
 	const {id} = req.params
-	const rta = await Auth.findByPk(id)
+	const rta = await findByPkAuth(id)
 	return res.json(rta)
 });
 
@@ -239,7 +202,7 @@ app.post("/enviar-email", async(req,res)=>{
 	const {nombreReportador, telefono, informacion} = req.body.textBody
 	try {
     const data = await resend.emails.send({
-			"from": process.env.FROM_EMAIL,
+			"from": "petfinder@reportes.petfinder.com.ar",
 			"to": to,
 			"subject": subject,
 			"html": `<p>Hola, soy ${nombreReportador}. Tengo información sobre <strong>first email</strong>!</p>`
@@ -257,5 +220,5 @@ app.get("*", function (req, res) {
 }); */
 
 app.listen(PORT, () => {
-	console.log(`example app listening at http://localhost:${PORT}`);
+	console.log(`Pet Finder App Backend listening at http://localhost:${PORT}`);
 });
