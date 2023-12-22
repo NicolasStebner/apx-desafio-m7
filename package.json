@@ -5,7 +5,7 @@
   "scripts": {
     "dev:fe": "parcel serve ./fe-src/index.html",
     "dev:be": "nodemon --watch ./be-src/index.ts --exec ts-node ./be-src/index.ts",
-    "build:be": "tsc",
+    "build:be": "tsc --skipLibCheck ./be-src/index.ts",
     "build:fe": "parcel build ./fe-src/index.html",
     "build": "npm run build:fe && npm run build:be",
     "dev": "npm run dev:be",
