@@ -27,6 +27,8 @@ function initSearchForm(callback) {
 			},
 			function (err, data, res) {
 				console.log(data);
+				sessionStorage.setItem("mascota_last_long",data.features[0].center[0])
+				sessionStorage.setItem("mascota_last_lati",data.features[0].center[1])
 				if (!err) callback(data.features);
 			}
 		);
@@ -49,6 +51,5 @@ function initSearchForm(callback) {
 		const [lng, lat] = firstResult.geometry.coordinates;
 		map.setCenter(firstResult.geometry.coordinates);
 		map.setZoom(14);
-		console.log(marker)
 	});
 })();
