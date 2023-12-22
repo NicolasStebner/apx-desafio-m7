@@ -9,7 +9,7 @@ import { findOrCreateUser, findByEmailUser } from "./controllers/users-controlle
 import { checkEmailExist, checkEmailPassword, findOrCreateAuth, findByEmailAuth, findByPkAuth } from "./controllers/auth-controller";
 import { borrarMascota, borrarUbicacionMascota, createMascota, findByPkMascota, getMascotaSegunIdReportador, guardarUbicacionMascota, mascotaEncontrada, mascotasCerca, updateMascota } from "./controllers/mascota-controller";
 
-const PORT = process.env.PORT || 3005;
+const port = process.env.PORT || 3005;
 const app = express();
 const resend = new Resend(process.env.API_KEY_RESEND);
 
@@ -219,6 +219,6 @@ app.get("*", function (req, res) {
 	res.sendFile(staticDirPath + "/index.html");
 }); */
 
-app.listen(PORT, () => {
+app.listen(port, () => {
 	console.log(`Pet Finder App Backend listening at http://localhost:${PORT}`);
 });
