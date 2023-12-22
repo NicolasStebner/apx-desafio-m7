@@ -7,10 +7,12 @@ import { User, Mascota, Auth } from "./models";
 import { updateProfile, getProfile } from "./controllers/users-controller";
 import { cloudinary } from "./lib/cloudinary";
 import { client } from "./lib/algolia";
+import { resend } from "./lib/resend";
 
 const PORT = process.env.PORT || 3005;
 const app = express();
-
+const algoliaUserIndex = client.initIndex("users")
+const algoliaMascotaIndex = client.initIndex("mascotas")
 app.use(
 	express.json({
 		limit: "50mb",
@@ -19,6 +21,15 @@ app.use(
 app.use(cors());
 
 app.get("/test", (req, res) => {
+	// algoliaUserIndex.saveObject({
+	// 	objectID: "1",
+	// 	cositas:"algo para guardar"
+	// }).then((res) => {
+	// 	console.log(res);
+	// })
+	// .catch((e) => {
+	// 	console.log(e);
+	// });
 	res.json({ test: "ok" });
 });
 
@@ -73,6 +84,16 @@ app.post("/signup", async (req, res) => {
 			user_id: user.get("id"),
 		},
 	});
+	algoliaUserIndex.saveObject({
+			objectID: user.get("id"),
+			cositas:"algo para guardar"
+		}).then((res) => {
+			console.log(res);
+		})
+		.catch((e) => {
+			console.log(e);
+		});
+
 	res.json(auth);
 });
 
@@ -115,8 +136,22 @@ app.post("/reportar-mascota/", async (req, res) => {
 		ubicacion: ubicacion,
 		fotoURL: imagen.secure_url,
 		idReportador: idReportador,
-		perdido:true
+		perdido: true
 	});
+
+	algoliaMascotaIndex.saveObject({
+		objectID: mascota.getDataValue("id"),
+		_geoloc:{
+			lat: req.body.lat,
+			lng: req.body.lng
+		}
+	}).then((res) => {
+		console.log(res);
+	})
+	.catch((e) => {
+		console.log(e);
+	});	
+
 	return res.json(mascota);
 });
 
@@ -181,9 +216,39 @@ app.delete("/eliminar-mascota-by-id", async (req, res) => {
 			id: req.body.id,
 		},
 	});
+	algoliaMascotaIndex.deleteObject(req.body.id)
 	return res.json(rta);
 });
+app.get("/get-mascotas-cerca", async (req, res) => {
+	const { lat, lng } = req.query;
+	const { hits } = await algoliaMascotaIndex.search("", {
+		aroundLatLng: [lat, lng].join(","),
+		aroundRadius: 100000000,
+	});
+	res.json(hits);
+});
 
+app.get("/get-email-by-id/:id", async(req,res)=>{
+	const {id} = req.params
+	const rta = await Auth.findByPk(id)
+	return res.json(rta)
+});
+
+app.post("/enviar-email", async(req,res)=>{
+	const {to, subject} = req.body
+	const {nombreReportador, telefono, informacion} = req.body.textBody
+	try {
+    const data = await resend.emails.send({
+			"from": process.env.FROM_EMAIL,
+			"to": to,
+			"subject": subject,
+			"html": `<p>Hola, soy ${nombreReportador}. Tengo información sobre <strong>first email</strong>!</p>`
+		})
+    res.status(200).json({ data });
+  } catch (error) {
+    res.status(500).json({ error });
+  }
+})
 /* const staticDirPath = path.resolve(__dirname, "../fe-dist");
 app.use(express.static(staticDirPath));
 
