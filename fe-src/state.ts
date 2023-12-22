@@ -26,7 +26,12 @@ const state = {
 		const gs = await this.getState();
 		gs.email = "";
 		sessionStorage.removeItem("useremail");
-		//remover mas cosas
+		sessionStorage.removeItem("lat_user")
+		sessionStorage.removeItem("lng_user")
+		sessionStorage.removeItem("mascota")
+		sessionStorage.removeItem("mascota_id")
+		sessionStorage.removeItem("mascota_last_long")
+		sessionStorage.removeItem("mascota_last_lati")
 	},
 	async setNombreAndLocalidad(nombre: string, ubicacion: string) {
 		const gs = await this.getState();
