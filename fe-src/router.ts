@@ -1,15 +1,15 @@
 import { initPageWelcome } from "./pages/home";
-import { initHomeMascotas } from "./pages/home-mascotas";
+import { initMascotasCercanas } from "./pages/home-mascotas";
 import { initLogin } from "./pages/login";
 import { initLoginPassword } from "./pages/login-password";
 import { initSignUp } from "./pages/signup";
 import { initProfile } from "./pages/profile";
 import { initProfileDatosPersonales } from "./pages/profile-datos-personales";
 import { initProfileCambiarContrasenia } from "./pages/profile-contrasenia";
-import { initNotReports } from "./pages/mis-reportes-vacio";
 import { initMisReportes } from "./pages/mis-reportes";
 import { initReportarMascota } from "./pages/reportar";
 import { initEditarReporteMascota } from "./pages/reportar-editar";
+import { initComoFuncionaPage } from "./pages/como-funciona-pet-finder";
 
 const routes = [
 	{
@@ -17,8 +17,12 @@ const routes = [
 		component: initPageWelcome,
 	},
 	{
-		path: /\/home-mascotas/,
-		component: initHomeMascotas,
+		path: /\/mascota-cerca/,
+		component: initMascotasCercanas,
+	},
+	{
+		path: /\/como-funciona-pet-finder/,
+		component: initComoFuncionaPage,
 	},
 	{
 		path: /\/login/,
@@ -43,10 +47,6 @@ const routes = [
 	{
 		path: /\/profile-cambiar-contrasenia/,
 		component: initProfileCambiarContrasenia,
-	},
-	{
-		path: /\/mis-reportes-vacio/,
-		component: initNotReports,
 	},
 	{
 		path: /\/reportar-mascota/,
