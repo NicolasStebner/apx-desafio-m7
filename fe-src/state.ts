@@ -26,6 +26,7 @@ const state = {
 		const gs = await this.getState();
 		gs.email = "";
 		sessionStorage.removeItem("useremail");
+		//remover mas cosas
 	},
 	async setNombreAndLocalidad(nombre: string, ubicacion: string) {
 		const gs = await this.getState();
@@ -104,6 +105,8 @@ const state = {
 		ubicacion: string
 	) {
 		const idReportador = await this.getIdUserByEmail();
+		const lat = parseFloat(sessionStorage.getItem("mascota_last_lati"))
+		const lng= parseFloat(sessionStorage.getItem("mascota_last_long"))
 		const rta = await fetch(`${API_BASE_URL}/reportar-mascota/`, {
 			method: "post",
 			headers: {
@@ -114,6 +117,8 @@ const state = {
 				fotoURL: urlImagen,
 				ubicacion: ubicacion,
 				idReportador: idReportador,
+				lat: lat,
+				lng: lng
 			}),
 		});
 		return rta.json();
@@ -125,7 +130,28 @@ const state = {
 		return IdReportador;
 	},
 	async mascotasCerca() {
-		/* pedir la ubicacion de la data, buscar con *herramienta* las mascotas alrededor */
+		//pido las mascotas cerca de la ubicacion del usuario
+		const lat_user = sessionStorage.getItem("lat_user")
+		const lng_user = sessionStorage.getItem("lng_user")
+		const data = await fetch(`${API_BASE_URL}/get-mascotas-cerca?lat=${lat_user}&lng=${lng_user}`)
+		const rta = await data.json()
+		//agarro el id del usuario
+		const user_id = await this.getIdUserByEmail()
+		//pido esas mascotas a la base de datos
+		const mascotasPosta = []
+		for (const i of rta) {
+			try{
+				const mascota = await fetch(`${API_BASE_URL}/get-mascota-by-id/${i.objectID}`)
+				const mascotaData = await mascota.json()
+				//filtro las mascotas que no sean reportadas por el usuario
+				if(mascotaData.idReportador != user_id){
+					mascotasPosta.push(mascotaData)
+				}
+			}catch(e){
+				console.log(e)
+			}
+		}
+		return mascotasPosta
 	},
 	async misReportes() {
 		const user_id = await this.getIdUserByEmail()
@@ -183,6 +209,30 @@ const state = {
 			}),
 		})
 		const rta = await data.json();
+		return rta
+	},
+	async getEmailById(id:number){
+		const data = await fetch(`${API_BASE_URL}/get-email-by-id/${id}`)
+		const rta = await data.json()
+		return rta
+	},
+	async sendEmail(nombreReportador, telefono, informacion){
+		const mascota = await this.getMascotaById()
+		const user_email = await this.getEmailById(mascota.idReportador)
+		const data = await fetch(`${API_BASE_URL}/enviar-email`,{
+			method: "post",
+			headers: {
+				"content-type": "application/json",
+			},
+			body: JSON.stringify({
+				to: user_email,
+				subject: "",
+				textBody: {
+					nombreReportador, telefono, informacion
+				}
+			}),
+		})
+		const rta = await data.json()
 		return rta
 	}
 };
