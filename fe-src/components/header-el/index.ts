@@ -129,6 +129,7 @@ export function init() {
 			var emailUserCont = document.createElement("p");
 			emailUserCont.textContent = emailUser;
 			emailUserCont.classList.add("ventana__contenido");
+			emailUserCont.classList.add("./profile");
 
 			var cerrarSesion = document.createElement("a");
 			cerrarSesion.textContent = "Cerrar Sesión";
