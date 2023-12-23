@@ -160,9 +160,12 @@ const state = {
 	},
 	async misReportes() {
 		const user_id = await this.getIdUserByEmail()
-		const data = await fetch(`${API_BASE_URL}/get-reports-by-id/${user_id}`)
-		const rta = await data.json()
-		return rta
+		if(user_id){
+			const data = await fetch(`${API_BASE_URL}/get-reports-by-id/${user_id}`)
+			const rta = await data.json()
+			return rta
+		}
+		return []
 	},
 	async getMascotaById(){
 		const id = sessionStorage.getItem("mascota_id")
