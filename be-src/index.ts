@@ -77,21 +77,13 @@ app.post("/signup", async (req, res) => {
 
 app.post("/user/:email", async (req, res) => {
 	const {email, nombre, ubicacion} = req.body
-	if(email){
-		const user = await findByEmailUser(req.body.email)
-		if (user) {
-			if(nombre != "" && ubicacion != ""){
-				await user.update({
-					nombre: req.body.nombre,
-					ubicacion: req.body.ubicacion,
-				});
-				res.status(200).json({ message: "updated" });
-			}
-			res.status(400).json({message: "nombre y/o ubicacion no válida"})
-		}
-		res.status(400).json({ message: "usuario no encontrado" });
-	}else{
-		res.status(400).json({message:"Se necesita un email válido/existente."})
+	const user = await findByEmailUser(req.body.email)
+	if(nombre != "" && ubicacion != ""){
+		await user.update({
+			nombre: req.body.nombre,
+			ubicacion: req.body.ubicacion,
+		});
+		res.status(200).json({ message: "updated" });
 	}
 });
 
@@ -127,12 +119,11 @@ app.post("/reportar-mascota/", async (req, res) => {
 
 app.get("/get-id-by-email/:email", async (req, res) => {
 	const {email} = req.params
-	if(email){
+	if(email != "null"){
 		const rta = await findByEmailAuth(email)
 		return res.json(rta["user_id"]);
-	}else{
-		res.status(400).json({message: "Se necesita un email válido/existente." })
 	}
+	res.json({})
 });
 
 app.get("/get-reports-by-id/:id", async (req, res) => {
