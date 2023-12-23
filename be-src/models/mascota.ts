@@ -14,7 +14,7 @@ export const Mascota = sequelize.define('mascota',{
 	idReportador:{
 		type:DataTypes.INTEGER
 	},
-	pedido:{
+	perdido:{
 		type:DataTypes.BOOLEAN
 	}
 })
