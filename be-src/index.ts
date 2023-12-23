@@ -35,12 +35,8 @@ function getSHA256ofString(text: string) {
 //Auth
 app.post("/check-if-email-exists", async (req, res) => {
 	const { email } = req.body;
-	if(email){
-		const existeEmail = checkEmailExist(email)
-		res.json(existeEmail);
-	}else{
-		res.status(400).json({message:"Se necesita un email válido/existente."})
-	}
+	const existeEmail = checkEmailExist(email)
+	res.json(existeEmail);
 });
 
 app.post("/signin", async (req, res) => {
@@ -54,12 +50,7 @@ app.post("/signin", async (req, res) => {
 				process.env.SECRET
 				);
 			res.json({ token });
-		} else {
-			res.status(400).json({ error: "email or pass incorrect" });
 		}
-	}
-	else{
-		res.status(400).json({message:"Falta el email y/o contraseña"})
 	}
 });
 
@@ -70,8 +61,6 @@ app.post("/signup", async (req, res) => {
 		const [user, created] = await findOrCreateUser(email)
 		const [auth, authCreated] = await findOrCreateAuth(user.get("id"),email,passwordHasheado)
 		res.json(auth);
-	}else{
-		res.status(400).json({message:"Se necesita un email y contraseña."})
 	}
 });
 
@@ -97,9 +86,6 @@ app.post("/change-password/:email/:password", async (req, res) => {
 		});
 		res.status(200).json({ message: "contraseña actualizada" });
 		}
-		res.status(400).json({ message: "usuario no encontrado" });
-	}else{
-		res.status(400).json({message: "Se necesita un email válido/existente." })
 	}
 });
 
@@ -131,8 +117,6 @@ app.get("/get-reports-by-id/:id", async (req, res) => {
 	if(id){
 		const rta = await getMascotaSegunIdReportador(id)
 		return res.json(rta);
-	}else{
-		res.status(400).json({message: "Se necesita un id válido/existente." })
 	}
 });
 
@@ -141,8 +125,6 @@ app.get("/get-mascota-by-id/:id", async (req, res) => {
 	if(id){
 		const rta = await findByPkMascota(id)
 		return res.json(rta);
-	}else{
-		res.status(400).json({message: "Se necesita un id válido/existente." })
 	}
 });
 app.put("/guardar-mascota-by-id", async (req, res) => {
@@ -162,9 +144,6 @@ app.put("/mascota-encontrada-by-id", async (req, res) => {
 		const rta = await mascotaEncontrada(id)
 		return res.json(rta);
 	}
-	else{
-		res.status(400).json({message: "Se necesita un id válido/existente." })
-	}
 });
 
 app.delete("/eliminar-mascota-by-id", async (req, res) => {
@@ -173,8 +152,6 @@ app.delete("/eliminar-mascota-by-id", async (req, res) => {
 		const rta = await borrarMascota(id)
 		await borrarUbicacionMascota(id)
 		return res.json(rta);
-	}else{
-		res.status(400).json({message: "Se necesita un id válido/existente." })
 	}
 });
 
