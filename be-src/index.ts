@@ -13,6 +13,8 @@ const port = process.env.PORT || 3005;
 const app = express();
 const resend = new Resend(process.env.API_KEY_RESEND);
 
+app.use(express.static(path.join(__dirname, "../dist")));
+
 app.use(
 	express.json({
 		limit: "50mb",
