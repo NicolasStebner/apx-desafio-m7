@@ -1,9 +1,10 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export function initReportarMascota(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
 	    	<title-el class="title centrado" label="Reportar mascota"></title-el>
         <h4 class="centrado">Ingresá la siguiente información para realizar el reporte de la mascota</h4>
@@ -20,6 +21,8 @@ export function initReportarMascota(params) {
         <button-el class="button cancelar" color="#4A5553" label="Cancelar"></button-el>
     </main>
     `;
+		const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	const buttonToAddPhoto = div.querySelector(".upPhoto");
 	buttonToAddPhoto.addEventListener("click", () => {
 		const imgEl = div.querySelector(".img-to-replace");

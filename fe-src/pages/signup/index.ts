@@ -1,9 +1,10 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export function initSignUp(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
 	    <title-el class="title centrado" label="Registrarse"></title-el>
 	    <h4 class="centrado">Ingresá los siguientes datos para realizar el registro</h4>
@@ -14,7 +15,8 @@ export function initSignUp(params) {
         <button-el class="button" color="#5A8FEC" label="Siguiente"></button-el>
     </main>
     `;
-
+		const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+		headerSetter(headerOptions,params)
 	const buttonEl = div.querySelector(".button");
 	buttonEl.addEventListener("click", async () => {
 		const inputEls = div.querySelectorAll(".input");

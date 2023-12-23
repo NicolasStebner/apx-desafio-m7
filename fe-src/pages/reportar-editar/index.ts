@@ -1,10 +1,11 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export function initEditarReporteMascota(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
     var mascota = JSON.parse(sessionStorage.getItem("mascota"))
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
         <title-el class="title centrado" label="Editar reporte de mascota"></title-el>
         <h4 class="centrado">Ingresá la siguiente información para realizar el reporte de la mascota</h4>
@@ -22,6 +23,8 @@ export function initEditarReporteMascota(params) {
         <button-el class="button eliminar" color="#EB6372" label="Eliminar reporte"></button-el>
     </main>
     `;
+    const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
     const buttonToAddPhoto = div.querySelector(".upPhoto");
 	buttonToAddPhoto.addEventListener("click", () => {
 		const imgEl = div.querySelector(".img-to-replace");

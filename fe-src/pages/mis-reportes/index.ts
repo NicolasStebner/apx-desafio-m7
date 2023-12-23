@@ -1,11 +1,12 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export async function initMisReportes(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	const misReportes = await state.misReportes(); //reportes hechos por el usuario
 	if(misReportes.length != 0){
 		div.innerHTML = `
-		<header-el></header-el>
+		<header-el class="header"></header-el>
     <main class="main">
 			<title-el class="title centrado" label="Mascotas reportadas"></title-el>
 			${showReports(misReportes,params)}
@@ -24,7 +25,7 @@ export async function initMisReportes(params) {
 		})
 	}else{
 		div.innerHTML = `
-			<header-el></header-el>
+			<header-el class="header"></header-el>
     	<main class="main">
 				<title-el class="title centrado" label="Mascotas reportadas"></title-el>
 				<h3 class="centrado" >Aún no reportaste mascotas perdidas</h3>
@@ -37,6 +38,8 @@ export async function initMisReportes(params) {
 			params.goTo("/reportar-mascota");
 		})
 	}
+	const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	return div;
 }
 

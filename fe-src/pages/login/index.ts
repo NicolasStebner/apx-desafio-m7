@@ -1,9 +1,10 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export async function initLogin(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
         <img-el class="img" asset="auth_login" alt="login"></img-el>
 	    <title-el class="title centrado" label="Ingresar"></title-el>
@@ -13,7 +14,8 @@ export async function initLogin(params) {
 		<h5 class="centrado signup">¿Aún no tenes cuenta? <p class="link">Registrate</p></h5>
     </main>
     `;
-
+	const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	const buttonEl = div.querySelector(".button");
 	buttonEl.addEventListener("click", async () => {
 		const emailCont = div.querySelector(".input");

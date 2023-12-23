@@ -1,8 +1,9 @@
+import { headerSetter } from "../../util";
 export async function initPageWelcome(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
 	<main class="main">
 		<img-el class="img" asset="home_img" alt="permissions"></img-el>
 		<title-el class="title centrado" color="#EB6372" label="Pet Finder App"></title-el>
@@ -11,6 +12,8 @@ export async function initPageWelcome(params) {
 		<button-el class="button comoFunciona" color="#00A884"label="¿Cómo funciona Pet Finder?"></button-el>
 	</main>
     `;
+	const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	const buttonUbicacionEl = div.querySelector(".ubicacion");
 	buttonUbicacionEl.addEventListener("click", () => {
 		console.log(navigator.geolocation)

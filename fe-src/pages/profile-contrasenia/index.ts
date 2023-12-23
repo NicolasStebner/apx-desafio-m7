@@ -1,10 +1,11 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 
 export function initProfileCambiarContrasenia(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
 	    <title-el class="title centrado" label="Contraseña"></title-el>
         <input-el class="input" label="CONTRASEÑA" type="password" placeholder=""></input-el>
@@ -12,6 +13,8 @@ export function initProfileCambiarContrasenia(params) {
         <button-el class="button" color="#5A8FEC" label="Guardar"></button-el>
     </main>
     `;
+		const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	const buttonEl = div.querySelector(".button");
 	buttonEl.addEventListener("click", async () => {
 		const [firstInput, secondIn] = div.querySelectorAll(".input");

@@ -1,11 +1,12 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export async function initMascotasCercanas(params) {
 	const div = document.createElement("div");
 	div.classList.add("contenedor");
 	const mascotasCerca = await state.mascotasCerca();
 	if(mascotasCerca.length > 0){
 		div.innerHTML = `
-		<header-el></header-el>
+		<header-el class="header"></header-el>
 		<div class="contenedor-report">
 			<div class="right">
 				<p class="x">X</p>
@@ -54,7 +55,7 @@ export async function initMascotasCercanas(params) {
 			infoCont.shadowRoot.querySelector(".input").value = ""
 			reportEl.style.display = ""
 		})
-
+		
 		var contador = 0
 		//mappeo de los reportes para agregar en cada boton al redireccion correspondiente
 		mascotasCerca.map((r)=>{
@@ -66,11 +67,13 @@ export async function initMascotasCercanas(params) {
 		})
 	}else{
 		div.innerHTML = `
-		<header-el></header-el>
+		<header-el class="header"></header-el>
     <div class="main">
-			<title-el class="centrado" label="No hay mascotas cerca"></title-el>
+		<title-el class="centrado" label="No hay mascotas cerca"></title-el>
     </div>`;
 	}
+	const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	return div;
 }
 

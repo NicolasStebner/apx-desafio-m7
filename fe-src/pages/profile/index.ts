@@ -1,11 +1,12 @@
 import { state } from "../../state";
+import { headerSetter } from "../../util";
 export async function initProfile(params) {
 	const div = document.createElement("div");
 	// const email = await state.getEmail();
 	const email = sessionStorage.getItem("useremail");
 	div.classList.add("contenedor");
 	div.innerHTML = `
-	<header-el></header-el>
+	<header-el class="header"></header-el>
     <main class="main">
 	    <title-el class="title centrado"label="Mis datos"></title-el>
         <button-el class="button datos" color="#5A8FEC" label="Modificar datos personales"></button-el>
@@ -14,6 +15,8 @@ export async function initProfile(params) {
         <p class="centrado logout link">Cerrar Sesión</p>
     </main>
     `;
+	const headerOptions = div.querySelector(".header").shadowRoot.querySelector(".header-container").querySelector(".ventana").querySelector(".ventana__cont").querySelectorAll(".ventana__contenido")
+	headerSetter(headerOptions,params)
 	const datosButton = div.querySelector(".datos");
 	const passwordButton = div.querySelector(".password");
 	const logoutEl = div.querySelector(".logout");
