@@ -107,22 +107,24 @@ export function init() {
 			var homeLink = document.createElement("a");
 			homeLink.classList.add("ventana__contenido");
 			homeLink.textContent = "Home";
-			homeLink.setAttribute("href", "./home");
+			// homeLink.setAttribute("href", "./home");
+			homeLink.classList.add("./home")
 
 			var misDatosLink = document.createElement("a");
 			misDatosLink.classList.add("ventana__contenido");
 			misDatosLink.textContent = "Mis datos";
-			misDatosLink.setAttribute("href", "./profile");
+			// misDatosLink.setAttribute("href", "./profile");
+			misDatosLink.classList.add("./profile")
 
 			var misMascotasReportadas = document.createElement("a");
 			misMascotasReportadas.classList.add("ventana__contenido");
 			misMascotasReportadas.textContent = "Mis mascotas reportadas";
-			misMascotasReportadas.setAttribute("href", "./mis-reportes");
-
+			misMascotasReportadas.classList.add("./mis-reportes")
+			
 			var reportarMascota = document.createElement("a");
 			reportarMascota.classList.add("ventana__contenido");
 			reportarMascota.textContent = "Reportar mascota";
-			reportarMascota.setAttribute("href", "./reportar-mascota");
+			reportarMascota.classList.add("./reportar-mascota")
 
 			var emailUserCont = document.createElement("p");
 			emailUserCont.textContent = emailUser;
@@ -130,8 +132,8 @@ export function init() {
 
 			var cerrarSesion = document.createElement("a");
 			cerrarSesion.textContent = "Cerrar Sesión";
-			cerrarSesion.setAttribute("href", "/login");
 			cerrarSesion.classList.add("ventana__contenido");
+			cerrarSesion.classList.add("./login")
 			cerrarSesion.classList.add("link");
 			cerrarSesion.addEventListener("click", async () => {
 				await state.logOut();
