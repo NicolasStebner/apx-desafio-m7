@@ -26,7 +26,12 @@ export async function initPageWelcome(params) {
 				sessionStorage.setItem("lat_user",latitud.toString())
 				sessionStorage.setItem("lng_user",longitud.toString())
 				// Aquí puedes agregar tu lógica para utilizar Mapbox con las coordenadas obtenidas
-				params.goTo("/mascota-cerca");
+				const email = sessionStorage.getItem("useremail")
+				if(email){
+					params.goTo("/mascota-cerca");
+				}else{
+					params.goTo("/login");
+				}
 			}, function (error) {
 				console.error(`Error al obtener la ubicación: ${error.message}`);
 			});
