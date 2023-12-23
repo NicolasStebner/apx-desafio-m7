@@ -23,11 +23,7 @@ export function initProfileDatosPersonales(params) {
 		const localidadCont = div.querySelectorAll(".input")[1];
 		const localValue = localidadCont.shadowRoot.querySelector(".input").value;
 		const rta = await state.setNombreAndLocalidad(nombreValue, localValue);
-		if (!rta["message"]) {
-			alert("la localidad y el nombre fueron guardados");
-		} else {
-			alert("algo falló, intente más tarde");
-		}
+		params.goTo("./home")
 	});
 
 	return div;

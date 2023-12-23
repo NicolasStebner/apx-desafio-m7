@@ -22,15 +22,6 @@ export function initProfileCambiarContrasenia(params) {
 		const secondInputValue = secondIn.shadowRoot.querySelector(".input").value;
 		if (firstInputValue == secondInputValue) {
 			const rta = await state.cambiarContrasenia(firstInputValue);
-			if (rta["message"] == "password updated") {
-				alert("contraseña cambiada");
-			} else if (rta["message"] == "user not found") {
-				alert("el usuario no fue encontrado, debe registrarse");
-				params.goTo("/signup");
-			} else {
-				alert("no iniciaste sesion");
-				params.goTo("/login");
-			}
 		} else {
 			alert("las contraseñas deben coincidir");
 		}
