@@ -5,9 +5,4 @@
         "moduleResolution": "node",
         "resolveJsonModule": true,
     },
-    "ts-node": {
-        // Tell ts-node CLI to install the --loader automatically
-        "esm": true
-    },
-    "includes": ["./be-src/**/*.ts"]
 }
