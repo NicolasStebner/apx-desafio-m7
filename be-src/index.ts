@@ -35,7 +35,8 @@ function getSHA256ofString(text: string) {
 //Auth
 app.post("/check-if-email-exists", async (req, res) => {
 	const { email } = req.body;
-	const existeEmail = checkEmailExist(email)
+	const existeEmail = await checkEmailExist(email)
+	console.log(existeEmail)
 	res.json(existeEmail);
 });
 
