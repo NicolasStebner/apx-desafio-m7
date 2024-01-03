@@ -51,6 +51,8 @@ app.post("/signin", async (req, res) => {
 				process.env.SECRET
 				);
 			res.json({ token });
+		}else{
+			res.json({})
 		}
 	}
 });
@@ -93,15 +95,19 @@ app.post("/change-password/:email/:password", async (req, res) => {
 //Mascota
 app.post("/reportar-mascota/", async (req, res) => {
 	const { nombre, fotoURL, ubicacion, idReportador, lat, lng } = req.body;
-	const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
-		resource_type: "image",
-		discard_original_filename: true,
-		width: 1000
-	});
-	const mascota = await createMascota(nombre,ubicacion,imagen.secure_url,idReportador)
-	await guardarUbicacionMascota(mascota.getDataValue("id"),lat,lng)
-
-	return res.json(mascota);
+	try{
+		const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
+			resource_type: "image",
+			discard_original_filename: true,
+			width: 1000
+		});
+		const mascota = await createMascota(nombre,ubicacion,imagen.secure_url,idReportador)
+		await guardarUbicacionMascota(mascota.getDataValue("id"),lat,lng)
+		return res.json(mascota);
+	}catch(e){
+		console.log(e)
+	}
+	return res.json({error:"error al crear"})
 });
 
 app.get("/get-id-by-email/:email", async (req, res) => {
