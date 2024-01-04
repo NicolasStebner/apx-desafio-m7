@@ -2,7 +2,7 @@ import { Mascota } from "../models";
 import { client } from "../lib/algolia";
 
 export async function createMascota(nombre: string, ubicacion: string, fotoURL: string, idReportador: number) {
-	return await Mascota.create({ nombre, ubicacion, fotoURL,idReportador, pedido: true});
+	return await Mascota.create({ nombre, ubicacion, fotoURL,idReportador, perdido: true});
 }
 
 export async function updateMascota(id,nombre: string, ubicacion: string, fotoURL: string, idReportador: number) {
