@@ -54,3 +54,8 @@ export async function mascotasCerca(lat,lng,radio) {
 	return await algoliaMascotaIndex.search("", {aroundLatLng: [lat, lng].join(","), aroundRadius: radio,});
 }
 
+export async function mascotaCercaById(id){
+	const algoliaMascotaIndex = client.initIndex("mascotas")
+	return await algoliaMascotaIndex.getObject(id)
+}
+
