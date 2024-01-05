@@ -7,7 +7,7 @@ import { Resend } from 'resend';
 import { cloudinary } from "./lib/cloudinary";
 import { findOrCreateUser, findByEmailUser } from "./controllers/users-controller";
 import { checkEmailExist, checkEmailPassword, findOrCreateAuth, findByEmailAuth, findByPkAuth } from "./controllers/auth-controller";
-import { borrarMascota, borrarUbicacionMascota, createMascota, findByPkMascota, getMascotaSegunIdReportador, guardarUbicacionMascota, mascotaEncontrada, mascotasCerca, updateMascota } from "./controllers/mascota-controller";
+import { borrarMascota, borrarUbicacionMascota, createMascota, findByPkMascota, getMascotaSegunIdReportador, guardarUbicacionMascota, mascotaCercaById, mascotaEncontrada, mascotasCerca, updateMascota } from "./controllers/mascota-controller";
 
 const port = process.env.PORT || 3005;
 const app = express();
@@ -110,6 +110,23 @@ app.post("/reportar-mascota/", async (req, res) => {
 	return res.json({error:"error al crear"})
 });
 
+app.post("/reportar-mascota-sin-cloudinary/", async (req, res) => {
+	const { nombre, fotoURL, ubicacion, idReportador, lat, lng } = req.body;
+	try{
+		// const imagen = await cloudinary.uploader.upload(fotoURL, { //guarda la imagen en cloudinary
+		// 	resource_type: "image",
+		// 	discard_original_filename: true,
+		// 	width: 1000
+		// });
+		const mascota = await createMascota(nombre,ubicacion,"",idReportador)
+		await guardarUbicacionMascota(mascota.getDataValue("id"),lat,lng)
+		return res.json(mascota);
+	}catch(e){
+		console.log(e)
+	}
+	return res.json({error:"error al crear"})
+});
+
 app.get("/get-id-by-email/:email", async (req, res) => {
 	const {email} = req.params
 	if(email != "null"){
@@ -168,6 +185,12 @@ app.get("/get-mascotas-cerca", async (req, res) => {
 	res.json(hits);
 });
 
+app.get("/get-coordenadas-mascotas-by-id", async (req, res) => {
+	const { id } = req.query;
+	const rta = await mascotaCercaById(id)
+	res.json(rta);
+});
+
 app.get("/get-email-by-id/:id", async(req,res)=>{
 	const {id} = req.params
 	const rta = await findByPkAuth(id)
@@ -177,17 +200,19 @@ app.get("/get-email-by-id/:id", async(req,res)=>{
 app.post("/enviar-email", async(req,res)=>{
 	const {to, subject} = req.body
 	const {nombreReportador, telefono, informacion} = req.body.textBody
-	try {
-    const data = await resend.emails.send({
-			"from": "petfinder@reportes.petfinder.com.ar",
-			"to": to,
-			"subject": subject,
-			"html": `<p>Hola, soy ${nombreReportador}. Tengo información sobre <strong>first email</strong>!</p>`
-		})
-    res.status(200).json({ data });
-  } catch (error) {
-    res.status(500).json({ error });
-  }
+	if(nombreReportador != "" && telefono !="" && informacion != ""){
+		try {
+			const data = await resend.emails.send({
+				"from": "petfinder@reportes.petfinder.com.ar",
+				"to": to,
+				"subject": subject,
+				"html": `<p>Hola, soy ${nombreReportador}. Tengo información sobre <strong>first email</strong>!</p>`
+			})
+			res.status(200).json({ data });
+		} catch (error) {
+			res.status(500).json({ error });
+		}
+	}
 })
 /* const staticDirPath = path.resolve(__dirname, "../fe-dist");
 app.use(express.static(staticDirPath));
